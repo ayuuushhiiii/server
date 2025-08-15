@@ -1,42 +1,43 @@
-name: Deploy Server with Terraform
+name: Terraform Server Deployment
 
 on:
   push:
     branches:
-      - main  # Runs when you push to main branch
-  workflow_dispatch: # Allows manual trigger
+      - main
+  pull_request:
 
 jobs:
   terraform:
+    name: Terraform Server
     runs-on: ubuntu-latest
 
     steps:
-      # Step 1: Checkout the repo
+      # Step 1: Checkout repository
       - name: Checkout code
-        uses: actions/checkout@v4
+        uses: actions/checkout@v3
 
-      # Step 2: Configure AWS credentials
-      - name: Configure AWS credentials
-        uses: aws-actions/configure-aws-credentials@v4
-        with:
-          aws-access-key-id: ${{ secrets.AWS_ACCESS_KEY_ID }}
-          aws-secret-access-key: ${{ secrets.AWS_SECRET_ACCESS_KEY }}
-          aws-region: us-east-1 # Change if needed
-
-      # Step 3: Setup Terraform
+      # Step 2: Setup Terraform
       - name: Setup Terraform
-        uses: hashicorp/setup-terraform@v3
+        uses: hashicorp/setup-terraform@v2
         with:
-          terraform_version: 1.9.8 # Or your preferred version
+          terraform_version: 1.9.5  # Change version if needed
 
-      # Step 4: Terraform Init
+      # Step 3: Terraform Init
       - name: Terraform Init
         run: terraform init
+        working-directory: ./server
+
+      # Step 4: Terraform Validate
+      - name: Terraform Validate
+        run: terraform validate
+        working-directory: ./server
 
       # Step 5: Terraform Plan
       - name: Terraform Plan
         run: terraform plan
+        working-directory: ./server
 
       # Step 6: Terraform Apply
       - name: Terraform Apply
         run: terraform apply -auto-approve
+        working-directory: ./server
