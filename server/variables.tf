@@ -1,6 +1,6 @@
 variable "instance_name" {
   description = "name of server"
-  default = {}
+  #default = {}
   type = string
 }
 variable "ami_id" {
