@@ -1,31 +1,36 @@
-name: Terraform - Server Project
+name: Terraform Server Deployment
 
 on:
   push:
-    paths:
-      - 'server/**'
-      - '.github/workflows/server.yml'
+    branches:
+      - main
   pull_request:
 
 jobs:
   terraform:
     runs-on: ubuntu-latest
-    defaults:
-      run:
-        working-directory: ./server
 
     steps:
       - name: Checkout repository
         uses: actions/checkout@v3
 
-      - name: Setup Terraform
-        uses: hashicorp/setup-terraform@v2
+      - name: Set up Terraform
+        uses: hashicorp/setup-terraform@v3
+        with:
+          terraform_version: 1.7.5 # or your preferred version
 
       - name: Terraform Init
         run: terraform init
+
+      - name: Terraform Format
+        run: terraform fmt -check
 
       - name: Terraform Validate
         run: terraform validate
 
       - name: Terraform Plan
         run: terraform plan
+
+      # Uncomment below if you want automatic apply on push
+      # - name: Terraform Apply
+      #   run: terraform apply -auto-approve
