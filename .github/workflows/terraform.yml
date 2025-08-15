@@ -28,21 +28,25 @@ jobs:
         with:
           aws-access-key-id: ${{ secrets.AWS_ACCESS_KEY_ID }}
           aws-secret-access-key: ${{ secrets.AWS_SECRET_ACCESS_KEY }}
-          aws-region: us-east-1  # Change if your region is different
+          aws-region: us-east-1  # Change if your AWS region is different
 
       # Step 4: Terraform Init
       - name: Terraform Init
         run: terraform init
+        working-directory: ./s3_bucket
 
-      # Step 5: Terraform Validate (syntax check)
+      # Step 5: Terraform Validate
       - name: Terraform Validate
         run: terraform validate
+        working-directory: ./s3_bucket
 
       # Step 6: Terraform Plan
       - name: Terraform Plan
         run: terraform plan
+        working-directory: ./s3_bucket
 
       # Step 7: Terraform Apply (only on main branch)
       - name: Terraform Apply
         if: github.ref == 'refs/heads/main'
         run: terraform apply -auto-approve
+        working-directory: ./s3_bucket
